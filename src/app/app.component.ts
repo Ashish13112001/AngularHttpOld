@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Posts } from './posts.model';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +15,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {}
 
-  onCreatePost(postData: { title: string; content: string }) {
-   this.http.post('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json', postData).subscribe(res => {
+  onCreatePost(postData: Posts) {
+   this.http.post<{name: string}>('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json', postData).subscribe(res => {
     console.log('your response data == ', res);
    });
   }
@@ -30,9 +31,9 @@ export class AppComponent implements OnInit {
   }
 
   private fetchPosts(){
-    this.http.get('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json')
-    .pipe(map(resData => {
-      let postArray = [];
+    this.http.get<{[key: string]: Posts}>('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json')
+    .pipe(map((resData) => {
+      let postArray: Posts[] = [];
       for(const key in resData){
         if(resData.hasOwnProperty(key)){
           postArray.push({...resData[key], id: key});
