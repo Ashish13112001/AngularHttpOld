@@ -33,4 +33,8 @@ export class PostsService {
       return postArray;
     }))
   }
+
+  deletePosts(){
+    return this.http.delete('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json');
+  }
 }
