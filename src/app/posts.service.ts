@@ -41,7 +41,7 @@ export class PostsService {
         headers: new HttpHeaders({'Content-Header': 'Hello Ashish'}),
         //for single param
         // params: new HttpParams().set('queryParam', 'ashishQueryParams')
-        params: searchParams
+        params: searchParams,
       }
     )
     .pipe(map((resData) => {
@@ -63,7 +63,10 @@ export class PostsService {
     return this.http.delete('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json',
       {
         // This define what type of response we get (body[byDefault], response, events)
-        observe: 'events'
+        observe: 'events',
+
+        // It tell which type of response you get (json, text, blob)
+        responseType: 'text'
       }
     ).pipe(tap(event => {
       console.log('-------event----',event);
