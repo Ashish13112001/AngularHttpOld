@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Posts } from './posts.model';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 
 @Injectable({
@@ -17,7 +17,10 @@ export class PostsService {
     this.http
       .post<{ name: string }>(
         'https://http-check-902dd-default-rtdb.firebaseio.com/posts.json',
-        postData
+        postData,
+        {
+          observe: 'response'
+        }
       )
       .subscribe((res) => {
         console.log('your response data == ', res);
@@ -57,6 +60,20 @@ export class PostsService {
   }
 
   deletePosts(){
-    return this.http.delete('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json');
+    return this.http.delete('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json',
+      {
+        // This define what type of response we get (body[byDefault], response, events)
+        observe: 'events'
+      }
+    ).pipe(tap(event => {
+      console.log('-------event----',event);
+
+      if(event.type === HttpEventType.Sent){
+        // some logic
+      }
+      if(event.type === HttpEventType.Response){
+        console.log(event.body);
+      }
+    }));
   }
 }
