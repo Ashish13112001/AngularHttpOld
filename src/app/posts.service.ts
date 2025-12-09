@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Posts } from './posts.model';
 import { catchError, map } from 'rxjs/operators';
@@ -29,7 +29,18 @@ export class PostsService {
   }
 
   fetchPosts(){
-    return this.http.get<{[key: string]: Posts}>('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json')
+    //for adding multiple params and "append('print','pretty');" give data in a good formate in the response
+    let searchParams = new HttpParams();
+    searchParams = searchParams.append('ashish','barthwal');
+    searchParams = searchParams.append('print','pretty');
+    return this.http.get<{[key: string]: Posts}>('https://http-check-902dd-default-rtdb.firebaseio.com/posts.json',
+      {
+        headers: new HttpHeaders({'Content-Header': 'Hello Ashish'}),
+        //for single param
+        // params: new HttpParams().set('queryParam', 'ashishQueryParams')
+        params: searchParams
+      }
+    )
     .pipe(map((resData) => {
       let postArray: Posts[] = [];
       for(const key in resData){
